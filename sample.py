@@ -3,20 +3,23 @@ import asyncio
 import random
 
 import blivedm
+import biliAvatar
 
 # 直播间ID的取值看直播间URL
 TEST_ROOM_IDS = [
-    12235923,
-    14327465,
-    21396545,
-    21449083,
-    23105590,
+    # 24486646,
+    9984297
+    # 12235923,
+    # 14327465,
+    # 21396545,
+    # 21449083,
+    # 23105590,
 ]
 
 
 async def main():
     await run_single_client()
-    await run_multi_client()
+    # await run_multi_client()
 
 
 async def run_single_client():
@@ -32,7 +35,7 @@ async def run_single_client():
     client.start()
     try:
         # 演示5秒后停止
-        await asyncio.sleep(5)
+        await asyncio.sleep(500)
         client.stop()
 
         await client.join()
@@ -74,7 +77,9 @@ class MyHandler(blivedm.BaseHandler):
         print(f'[{client.room_id}] 当前人气值：{message.popularity}')
 
     async def _on_danmaku(self, client: blivedm.BLiveClient, message: blivedm.DanmakuMessage):
-        print(f'[{client.room_id}] {message.uname}：{message.msg}')
+        print(f'[{client.room_id}] {message.uname}({message.uid})：{message.msg}')
+        avatar = biliAvatar.getAvatar(message.uid)
+        biliAvatar.downloadAvatar(avatar, './data', message.uid)
 
     async def _on_gift(self, client: blivedm.BLiveClient, message: blivedm.GiftMessage):
         print(f'[{client.room_id}] {message.uname} 赠送{message.gift_name}x{message.num}'
