@@ -2,6 +2,7 @@ import requests
 import os
 import logging
 from PIL import Image
+import json
 
 
 def getAvatar(uid):
@@ -34,8 +35,29 @@ def makImgRound(filename):
             if d <= r:
                 pimb[i, j] = pima[x0+i,y0+j]
     
-    output = filename + '.png'
+    output = filename[:filename.index('.')] + '.png'
     imgb.save(output)
+
+def enque(uid, uname, filename):
+    with open(filename, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+        candidates = data['candidates']
+        infoMap = data['infoMap']
+
+        if len(candidates)>=100:
+            uid = candidates.pop(0)
+            infoMap.pop(uid)
+
+        dataSet = set(candidates)
+        dataSet.add(uid)
+        infoMap[uid] = uname
+    
+    candidates = list(dataSet)
+    data['candidates'] = candidates
+    data['infoMap'] = infoMap
+    with open(filename, 'w', encoding='utf-8') as f:
+        data = json.dumps(data, ensure_ascii=False)
+        f.write(data)
 
 
 
@@ -56,6 +78,9 @@ def downloadAvatar(imgUrl, path, uid):
             f.write(img)
     except Exception as e:
         logging.exception(e)
+    
+    makImgRound(filename)
 
 if __name__ == '__main__':
-    makImgRound('data/16479958.jpg')
+    # makImgRound('data/16479958.jpg')
+    enque(1234, 'D:/codes/balls/assets/data/queue.json')

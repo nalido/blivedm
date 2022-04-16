@@ -8,7 +8,8 @@ import biliAvatar
 # 直播间ID的取值看直播间URL
 TEST_ROOM_IDS = [
     # 24486646,
-    9984297
+    # 9984297
+    6027704
     # 12235923,
     # 14327465,
     # 21396545,
@@ -35,8 +36,8 @@ async def run_single_client():
     client.start()
     try:
         # 演示5秒后停止
-        await asyncio.sleep(500)
-        client.stop()
+        # await asyncio.sleep(500)
+        # client.stop()
 
         await client.join()
     finally:
@@ -79,7 +80,8 @@ class MyHandler(blivedm.BaseHandler):
     async def _on_danmaku(self, client: blivedm.BLiveClient, message: blivedm.DanmakuMessage):
         print(f'[{client.room_id}] {message.uname}({message.uid})：{message.msg}')
         avatar = biliAvatar.getAvatar(message.uid)
-        biliAvatar.downloadAvatar(avatar, './data', message.uid)
+        biliAvatar.downloadAvatar(avatar, 'D:/codes/balls/images/avatars', message.uid)
+        biliAvatar.enque(message.uid, message.uname, 'D:/codes/balls/assets/data/queue.json')
 
     async def _on_gift(self, client: blivedm.BLiveClient, message: blivedm.GiftMessage):
         print(f'[{client.room_id}] {message.uname} 赠送{message.gift_name}x{message.num}'
